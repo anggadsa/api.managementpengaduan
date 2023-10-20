@@ -1,0 +1,34 @@
+export class PengaduanMasyarakatModel {
+  id: string;
+  UserId: string;
+  NamaPelapor: string;
+  JenisKelamin: string;
+  AlamatPelapor: string;
+  AlamatKantorSuratKuasa: string;
+  JenisPerkara: string;
+  TanggalLahir: Date;
+  TempatLahir: string;
+  Agama: string;
+  NIK: string;
+  NikFiles: string;
+  NoHandphone: string;
+  Email: string;
+  NotarisId: string;
+  NamaNotaris: string;
+  WilayahNotaris: string;
+  AlamatKantorNotaris: string;
+  IsPenegakHukum: boolean;
+  NamaKuasaHukum: string;
+  DokumenKuasaHukum: string;
+  NomerSuratKuasa: string;
+  TanggalSuratKuasa: Date;
+  NamaKantorSuratKuasa: string;
+  DetailLaporan: string;
+  SuratPengaduan: string;
+  Status: string;
+  RecInsert: Date;
+  RecUpdate: Date;
+  isVerified: boolean;
+  TanggalVerifikasi: Date;
+  CatatanTolakVerifikasi: string;
+}

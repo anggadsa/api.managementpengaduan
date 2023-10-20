@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model PengaduanMasyarakatModel {
+  Id                     String   @id @unique
+  UserId                 String
+  NamaPelapor            String
+  TanggalLahir           DateTime
+  TempatLahir            String
+  JenisKelamin           String
+  Agama                  String
+  Pekerjaan              String
+  NIK                    String
+  NikFiles               String
+  NoHandphone            String
+  Email                  String
+  AlamatPelapor          String
+  NotarisId              String
+  NamaNotaris            String
+  WilayahNotaris         String
+  AlamatKantorNotaris    String
+  IsPenegakHukum         Boolean  @default(false)
+  NamaKuasaHukum         String
+  DokumenKuasaHukum      String
+  NomerSuratKuasa        String
+  TanggalSuratKuasa      DateTime
+  NamaKantorSuratKuasa   String
+  AlamatKantorSuratKuasa String
+  DetailLaporan          String
+  JenisPerkara           String
+  SuratPengaduan         String
+  Status                 String
+  RecInsert              DateTime
+  RecUpdate              DateTime
+  isVerified             Boolean
+  TanggalVerifikasi      DateTime
+  CatatanTolakVerifikasi String
+
+  createdAt                                DateTime                                  @default(now())
+  updatedAt                                DateTime                                  @updatedAt
+  PengaduanMasyarakat_BuktiPendukungModels PengaduanMasyarakat_BuktiPendukungModel[]
+}
+
+model PengaduanMasyarakat_BuktiPendukungModel {
+  Id        String @id @default(uuid())
+  BuktiFile String
+
+  PengaduanMasyarakatModel   PengaduanMasyarakatModel? @relation(fields: [PengaduanMasyarakatModelId], references: [Id])
+  PengaduanMasyarakatModelId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
