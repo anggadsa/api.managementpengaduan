@@ -36,9 +36,9 @@ export class PengaduanMasyarakatController {
     const param = request.query;
     const result =
       await this.pengaduanMasyarakatService.getAllPengaduanMasyarakat(param);
-    return response.status(201).json({
+    return response.status(200).json({
       message: 'Successfully fetch data!',
-      data: result,
+      result,
     });
   }
 
@@ -50,7 +50,7 @@ export class PengaduanMasyarakatController {
   ): Promise<any | undefined> {
     const result =
       await this.pengaduanMasyarakatService.getPengaduanMasyarakat(Id);
-    return response.status(201).json({
+    return response.status(200).json({
       message: 'Successfully fetch data!',
       data: result,
     });
@@ -71,7 +71,7 @@ export class PengaduanMasyarakatController {
     // );
     return response.status(201).json({
       message: 'Successfully fetch data!',
-      data: result,
+      result,
     });
   }
 
