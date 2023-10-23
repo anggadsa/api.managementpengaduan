@@ -75,6 +75,26 @@ export class PengaduanMasyarakatController {
     });
   }
 
+  @Post('submit/:id')
+  async submit(
+    @Param('id') id: string,
+    @Body(ValidationPipe) body: UpdatePengaduanMasyarakat,
+    @Req() request: Request,
+    @Res() response: any,
+  ): Promise<PengaduanMasyarakatModel> {
+    const result =
+      await this.pengaduanMasyarakatService.submitPengaduanMasyarakat(id);
+    // const buktiPengaduan =
+    //   await this.buktiPendukungService.createBuktiPendukung(pengaduan);
+    // const result = await this.pengaduanMasyarakatService.getPengaduanMasyarakat(
+    //   buktiPengaduan.PengaduanMasyarakatModelId,
+    // );
+    return response.status(201).json({
+      message: 'Successfully fetch data!',
+      result,
+    });
+  }
+
   @Put()
   async update(
     @Body('id') id: string,

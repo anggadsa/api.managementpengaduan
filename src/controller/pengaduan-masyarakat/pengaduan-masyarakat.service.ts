@@ -4,6 +4,8 @@ import { PrismaService } from 'src/prisma.service';
 import { CreatePengaduanMasyarakatDto } from '../../dto/create-pengaduan-masyarakat.dto';
 import { PaginatorTypes, paginator } from '@nodeteam/nestjs-prisma-pagination';
 import { DateTime } from 'luxon';
+import { Status } from '@prisma/client';
+import { UpdatePengaduanMasyarakat } from 'src/dto/update-pengaduan-masyarakat.dto';
 
 export interface QueryFilter extends PengaduanMasyarakatModel {
   ({});
@@ -87,6 +89,7 @@ export class PengaduanMasyarakatService {
       data.recInsert = new Date(data.recInsert);
       data.recUpdate = new Date(data.recUpdate);
       data.tanggalVerifikasi = new Date(data.tanggalVerifikasi);
+      data.status = Status.draft;
       return await this.prisma.pengaduanMasyarakatModel.create({
         data,
       });
@@ -112,6 +115,18 @@ export class PengaduanMasyarakatService {
     if (IsExist === null) return console.log('id Not Found');
     return this.prisma.pengaduanMasyarakatModel.delete({
       where: { id: String(id) },
+    });
+  }
+
+  async submitPengaduanMasyarakat(
+    id: string,
+  ): Promise<UpdatePengaduanMasyarakat> {
+    console.log(id);
+    return this.prisma.pengaduanMasyarakatModel.update({
+      where: { id: String(id) },
+      data: {
+        status: Status.menungguVerifikasi,
+      },
     });
   }
 

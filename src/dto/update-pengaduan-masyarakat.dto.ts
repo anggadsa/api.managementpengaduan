@@ -1,11 +1,12 @@
 import { Status } from '@prisma/client';
-import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsEnum, IsOptional } from 'class-validator';
 import { AgamaState } from 'src/config/enum/agama.enum';
 
 export class UpdatePengaduanMasyarakat {
-  @IsNotEmpty()
+  @IsOptional()
   id: string;
 
+  @IsOptional()
   jenisKelamin: string;
   alamatPelapor: string;
   alamatKantorSuratKuasa: string;
@@ -17,8 +18,9 @@ export class UpdatePengaduanMasyarakat {
 
   @IsOptional()
   @IsEnum(AgamaState)
-  agama: AgamaState;
+  agama: AgamaState | string;
 
+  @IsOptional()
   pekerjaan: string;
   nik: string;
   nikFiles: string;
@@ -38,6 +40,7 @@ export class UpdatePengaduanMasyarakat {
   suratPengaduan: string;
 
   @IsEnum(Status)
+  @IsOptional()
   status: Status;
 
   recInsert: Date;
