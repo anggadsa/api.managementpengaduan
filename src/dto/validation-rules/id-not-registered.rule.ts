@@ -4,7 +4,7 @@ import {
   ValidatorConstraintInterface,
   registerDecorator,
 } from 'class-validator';
-import { PengaduanMasyarakatService } from '../../pengaduan-masyarakat.service';
+import { PengaduanMasyarakatService } from '../../controller/pengaduan-masyarakat/pengaduan-masyarakat.service';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 
 @ValidatorConstraint({ name: 'IdIsExist', async: true })
@@ -13,9 +13,9 @@ export class IsIdNotRegistered implements ValidatorConstraintInterface {
   constructor(
     private readonly pengaduanMasyarakatService: PengaduanMasyarakatService,
   ) {}
-  validate(Id: string | undefined) {
+  validate(id: string | undefined) {
     return this.pengaduanMasyarakatService
-      .getPengaduanMasyarakat(Id)
+      .getPengaduanMasyarakat(id)
       .then((data) => {
         if (data) {
           throw new UnprocessableEntityException('Id already exists');

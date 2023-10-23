@@ -11,7 +11,7 @@ import {
   FileFieldsInterceptor,
 } from '@nestjs/platform-express';
 import { FileUploadService } from './file-upload.service';
-import { BufferedFile } from 'src/minio-client/file.model';
+import { BufferedFile } from 'src/model/external/file-model';
 import { AuthGuard } from 'src/auth/auth.guard';
 
 @UseGuards(AuthGuard)

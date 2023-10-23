@@ -8,52 +8,55 @@ datasource db {
 }
 
 model PengaduanMasyarakatModel {
-  Id                     String   @id @unique
-  UserId                 String
-  NamaPelapor            String
-  TanggalLahir           DateTime
-  TempatLahir            String
-  JenisKelamin           String
-  Agama                  String
-  Pekerjaan              String
-  NIK                    String
-  NikFiles               String
-  NoHandphone            String
-  Email                  String
-  AlamatPelapor          String
-  NotarisId              String
-  NamaNotaris            String
-  WilayahNotaris         String
-  AlamatKantorNotaris    String
-  IsPenegakHukum         Boolean  @default(false)
-  NamaKuasaHukum         String
-  DokumenKuasaHukum      String
-  NomerSuratKuasa        String
-  TanggalSuratKuasa      DateTime
-  NamaKantorSuratKuasa   String
-  AlamatKantorSuratKuasa String
-  DetailLaporan          String
-  JenisPerkara           String
-  SuratPengaduan         String
-  Status                 String
-  RecInsert              DateTime
-  RecUpdate              DateTime
-  isVerified             Boolean
-  TanggalVerifikasi      DateTime
-  CatatanTolakVerifikasi String
-
-  createdAt                                DateTime                                  @default(now())
-  updatedAt                                DateTime                                  @updatedAt
-  PengaduanMasyarakat_BuktiPendukungModels PengaduanMasyarakat_BuktiPendukungModel[]
+  id                                       String                                    @id @default(uuid())
+  userId                                   String
+  namaPelapor                              String
+  tanggalLahir                             DateTime
+  tempatLahir                              String
+  jenisKelamin                             String
+  agama                                    String
+  pekerjaan                                String
+  nik                                      String
+  nikFiles                                 String
+  noHandphone                              String
+  email                                    String
+  alamatPelapor                            String
+  notarisId                                String                                    @unique @default(uuid())
+  namaNotaris                              String
+  wilayahNotaris                           String
+  alamatKantorNotaris                      String
+  isPenegakHukum                           Boolean                                   @default(false)
+  namaKuasaHukum                           String
+  dokumenKuasaHukum                        String
+  nomerSuratKuasa                          String                                    @unique
+  tanggalSuratKuasa                        DateTime
+  namaKantorSuratKuasa                     String
+  alamatKantorSuratKuasa                   String
+  detailLaporan                            String
+  jenisPerkara                             String
+  suratPengaduan                           String
+  status                                   Status                                    @default(draft)
+  recInsert                                DateTime                                  @default(now())
+  recUpdate                                DateTime?                                 @updatedAt
+  isVerified                               Boolean
+  tanggalVerifikasi                        DateTime
+  catatanTolakVerifikasi                   String
+  pengaduanMasyarakat_BuktiPendukungModels PengaduanMasyarakat_BuktiPendukungModel[]
 }
 
 model PengaduanMasyarakat_BuktiPendukungModel {
-  Id        String @id @default(uuid())
-  BuktiFile String
+  id                         String                    @id @default(uuid())
+  buktiFile                  String
+  pengaduanMasyarakatModelId String?
+  createdAt                  DateTime                  @default(now())
+  updatedAt                  DateTime                  @updatedAt
+  pengaduanMasyarakatModel   PengaduanMasyarakatModel? @relation(fields: [pengaduanMasyarakatModelId], references: [id])
 
-  PengaduanMasyarakatModel   PengaduanMasyarakatModel? @relation(fields: [PengaduanMasyarakatModelId], references: [Id])
-  PengaduanMasyarakatModelId String?
+  @@index([pengaduanMasyarakatModelId], map: "PengaduanMasyarakat_BuktiPendukungModel_PengaduanMasyarakat_fkey")
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+enum Status {
+  draft
+  menungguVerifikasi
+  diterima
 }

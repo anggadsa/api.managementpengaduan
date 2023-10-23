@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PengaduanMasyarakatModule } from './pengaduan-masyarakat/v1/pengaduan-masyarakat.module';
+import { PengaduanMasyarakatModule } from './controller/pengaduan-masyarakat/pengaduan-masyarakat.module';
 import { MinioClientModule } from './minio-client/minio-client.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { BuktiPendukungModule } from './bukti-pendukung/bukti-pendukung.module';

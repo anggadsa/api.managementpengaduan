@@ -13,9 +13,9 @@ import {
 } from '@nestjs/common';
 import { PengaduanMasyarakatService } from './pengaduan-masyarakat.service';
 import { Request, Response } from 'express';
-import { PengaduanMasyarakatModel } from './models/pengaduan-masyarakat.model';
-import { CreatePengaduanMasyarakatDto } from './dto/create-pengaduan-masyarakat.dto';
-import { UpdatePengaduanMasyarakat } from './dto/update-pengaduan-masyarakat.dto';
+import { PengaduanMasyarakatModel } from '../../model/pengaduan-masyarakat/pengaduan-masyarakat.model';
+import { CreatePengaduanMasyarakatDto } from '../../dto/create-pengaduan-masyarakat.dto';
+import { UpdatePengaduanMasyarakat } from '../../dto/update-pengaduan-masyarakat.dto';
 import Static from 'src/static/static';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { BuktiPendukungService } from 'src/bukti-pendukung/bukti-pendukung.service';
@@ -77,7 +77,7 @@ export class PengaduanMasyarakatController {
 
   @Put()
   async update(
-    @Body('Id') Id: string,
+    @Body('id') id: string,
     @Body(ValidationPipe) data: UpdatePengaduanMasyarakat,
     @Req() request,
     @Res() response,
@@ -85,7 +85,7 @@ export class PengaduanMasyarakatController {
     try {
       const result =
         await this.pengaduanMasyarakatService.updatePengaduanMasyarakat(
-          Id,
+          id,
           data,
         );
 

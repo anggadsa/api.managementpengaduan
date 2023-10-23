@@ -1,7 +1,7 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { PengaduanMasyarakatModel, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
-import { CreatePengaduanMasyarakatDto } from './dto/create-pengaduan-masyarakat.dto';
+import { CreatePengaduanMasyarakatDto } from '../../dto/create-pengaduan-masyarakat.dto';
 import { PaginatorTypes, paginator } from '@nodeteam/nestjs-prisma-pagination';
 import { DateTime } from 'luxon';
 
@@ -9,8 +9,8 @@ export interface QueryFilter extends PengaduanMasyarakatModel {
   ({});
 }
 
-export interface DateFilter extends Omit<QueryFilter, 'RecInsert'> {
-  RecInsert: any;
+export interface DateFilter extends Omit<QueryFilter, 'recInsert'> {
+  recInsert: any;
 }
 
 @Injectable()
@@ -34,14 +34,14 @@ export class PengaduanMasyarakatService {
       perPage: perPage,
     });
 
-    if (filter?.RecInsert) {
+    if (filter?.recInsert) {
       const startDate = {
-        gte: filter.RecInsert
-          ? DateTime.fromISO(filter.RecInsert).startOf('day').toString()
+        gte: filter.recInsert
+          ? DateTime.fromISO(filter.recInsert).startOf('day').toString()
           : DateTime.now().startOf('day').toString(),
       };
-      filter.RecInsert = startDate;
-      console.log(filter.RecInsert);
+      filter.recInsert = startDate;
+      console.log(filter.recInsert);
     }
 
     return await paginate<
@@ -52,11 +52,11 @@ export class PengaduanMasyarakatService {
       {
         where: filter,
         select: {
-          Id: true,
-          JenisPerkara: true,
-          NamaPelapor: true,
-          NamaKuasaHukum: true,
-          RecInsert: true,
+          id: true,
+          jenisPerkara: true,
+          namaPelapor: true,
+          namaKuasaHukum: true,
+          recInsert: true,
         },
         orderBy,
       },
@@ -68,25 +68,25 @@ export class PengaduanMasyarakatService {
   }
 
   async getPengaduanMasyarakat(
-    Id: string,
+    id: string,
   ): Promise<PengaduanMasyarakatModel | null> {
     return this.prisma.pengaduanMasyarakatModel.findUnique({
-      where: { Id: String(Id) },
+      where: { id: String(id) },
     });
   }
 
   async createPengaduanMasyarakat(
     data: CreatePengaduanMasyarakatDto,
   ): Promise<PengaduanMasyarakatModel> {
-    const IdIsExist = await this.getPengaduanMasyarakatId(data.Id);
+    const IdIsExist = await this.getPengaduanMasyarakatId(data.id);
     if (IdIsExist) {
       throw new UnprocessableEntityException('Id already exists');
     } else {
-      data.TanggalLahir = new Date(data.TanggalLahir);
-      data.TanggalSuratKuasa = new Date(data.TanggalSuratKuasa);
-      data.RecInsert = new Date(data.RecInsert);
-      data.RecUpdate = new Date(data.RecUpdate);
-      data.TanggalVerifikasi = new Date(data.TanggalVerifikasi);
+      data.tanggalLahir = new Date(data.tanggalLahir);
+      data.tanggalSuratKuasa = new Date(data.tanggalSuratKuasa);
+      data.recInsert = new Date(data.recInsert);
+      data.recUpdate = new Date(data.recUpdate);
+      data.tanggalVerifikasi = new Date(data.tanggalVerifikasi);
       return await this.prisma.pengaduanMasyarakatModel.create({
         data,
       });
@@ -94,30 +94,30 @@ export class PengaduanMasyarakatService {
   }
 
   async updatePengaduanMasyarakat(
-    Id: string,
+    id: string,
     data: PengaduanMasyarakatModel,
   ): Promise<PengaduanMasyarakatModel> {
     return this.prisma.pengaduanMasyarakatModel.update({
-      where: { Id: String(Id) },
+      where: { id: String(id) },
       data: {
-        Id: data.Id,
-        JenisPerkara: data.JenisPerkara,
-        DetailLaporan: data.DetailLaporan,
+        id: data.id,
+        jenisPerkara: data.jenisPerkara,
+        detailLaporan: data.detailLaporan,
       },
     });
   }
 
-  async deletePengaduanMasyarakat(Id: string): Promise<any> {
-    const IsExist = await this.getPengaduanMasyarakatId(Id);
-    if (IsExist === null) return console.log('Id Not Found');
+  async deletePengaduanMasyarakat(id: string): Promise<any> {
+    const IsExist = await this.getPengaduanMasyarakatId(id);
+    if (IsExist === null) return console.log('id Not Found');
     return this.prisma.pengaduanMasyarakatModel.delete({
-      where: { Id: String(Id) },
+      where: { id: String(id) },
     });
   }
 
-  private async getPengaduanMasyarakatId(Id: string): Promise<any> {
+  private async getPengaduanMasyarakatId(id: string): Promise<any> {
     return this.prisma.pengaduanMasyarakatModel.findUnique({
-      where: { Id: String(Id) },
+      where: { id: String(id) },
     });
   }
 }

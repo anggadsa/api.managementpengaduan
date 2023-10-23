@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MinioClientService } from './minio-client.service';
 import { MinioModule } from 'nestjs-minio-client';
-import { config } from './config';
+import { config } from '../config/etc/minio.conf';
 @Module({
   imports: [
     MinioModule.register({

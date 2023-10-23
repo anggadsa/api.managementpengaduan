@@ -1,3 +1,4 @@
+import { Status } from '@prisma/client';
 import {
   IsNotEmpty,
   IsString,
@@ -8,140 +9,140 @@ import {
   IsBoolean,
   IsUUID,
   IsEmail,
+  IsOptional,
 } from 'class-validator';
 import { AgamaState } from 'src/config/enum/agama.enum';
 import { KelaminState } from 'src/config/enum/kelamin.enum';
-import { StatusLaporanState } from 'src/config/enum/status-laporan.enum';
-// import { IdIsExist } from './validation-rules/id-not-registered.rule';
+// import { StatusLaporanState } from 'src/config/enum/status-laporan.enum';
 
 export class CreatePengaduanMasyarakatDto {
   @IsUUID()
   @IsNotEmpty()
   // @IdIsExist({ message: 'Id already registered' })
-  Id: string;
+  id: string;
 
   @IsNotEmpty()
   @IsEnum(KelaminState)
-  JenisKelamin: KelaminState;
+  jenisKelamin: KelaminState;
 
   @IsNotEmpty()
-  AlamatPelapor: string;
+  alamatPelapor: string;
 
   @IsNotEmpty()
-  AlamatKantorSuratKuasa: string;
+  alamatKantorSuratKuasa: string;
 
   @IsNotEmpty()
-  JenisPerkara: string;
+  jenisPerkara: string;
 
   @IsNotEmpty()
   @IsString()
-  UserId: string;
+  userId: string;
 
   @IsNotEmpty()
   @IsString()
   @Length(1, 100)
-  NamaPelapor: string;
+  namaPelapor: string;
 
   @IsNotEmpty()
   @IsDateString()
-  TanggalLahir: Date;
+  tanggalLahir: Date;
 
   @IsNotEmpty()
   @IsString()
   @Length(1, 100)
-  TempatLahir: string;
+  tempatLahir: string;
 
   @IsEnum(AgamaState)
-  Agama: AgamaState;
+  agama: AgamaState;
 
   @IsNotEmpty()
   @IsString()
   @Length(1, 100)
-  Pekerjaan: string;
+  pekerjaan: string;
 
   @IsNotEmpty()
   @IsString()
   @Length(15, 16)
-  NIK: string;
+  nik: string;
 
   @IsNotEmpty()
   @IsString()
-  NikFiles: string;
+  nikFiles: string;
 
   @IsNotEmpty()
   @IsString()
   @Matches(/^\d{1,13}$/)
-  NoHandphone: string;
+  noHandphone: string;
 
   @IsNotEmpty()
   @IsString()
   @IsEmail()
-  Email: string;
+  email: string;
 
   @IsNotEmpty()
   @IsString()
-  NotarisId: string;
+  notarisId: string;
 
   @IsNotEmpty()
   @IsString()
   @Length(1, 100)
-  NamaNotaris: string;
+  namaNotaris: string;
 
   @IsNotEmpty()
   @IsString()
-  WilayahNotaris: string;
+  wilayahNotaris: string;
 
   @IsNotEmpty()
   @IsString()
-  AlamatKantorNotaris: string;
+  alamatKantorNotaris: string;
 
   @IsNotEmpty()
   @IsBoolean()
-  IsPenegakHukum: boolean;
+  isPenegakHukum: boolean;
 
   @IsNotEmpty()
   @Length(1, 100)
-  NamaKuasaHukum: string;
+  namaKuasaHukum: string;
 
   @IsNotEmpty()
   @IsString()
-  DokumenKuasaHukum: string;
+  dokumenKuasaHukum: string;
 
   @IsNotEmpty()
   @IsString()
-  NomerSuratKuasa: string;
+  nomerSuratKuasa: string;
 
   @IsNotEmpty()
   @IsString()
   @IsDateString()
-  TanggalSuratKuasa: Date;
+  tanggalSuratKuasa: Date;
 
   @IsNotEmpty()
   @IsString()
   @Length(1, 100)
-  NamaKantorSuratKuasa: string;
+  namaKantorSuratKuasa: string;
 
   @IsNotEmpty()
   @IsString()
-  DetailLaporan: string;
+  detailLaporan: string;
 
   @IsNotEmpty()
   @IsString()
-  SuratPengaduan: string;
+  suratPengaduan: string;
 
-  @IsNotEmpty()
-  @IsEnum(StatusLaporanState)
-  Status: StatusLaporanState;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsDateString()
-  RecInsert: Date;
+  @IsOptional()
+  @IsEnum(Status)
+  status: Status;
 
   @IsNotEmpty()
   @IsString()
   @IsDateString()
-  RecUpdate: Date;
+  recInsert: Date;
+
+  @IsNotEmpty()
+  @IsString()
+  @IsDateString()
+  recUpdate: Date;
 
   @IsNotEmpty()
   @IsBoolean()
@@ -150,9 +151,9 @@ export class CreatePengaduanMasyarakatDto {
   @IsNotEmpty()
   @IsString()
   @IsDateString()
-  TanggalVerifikasi: Date;
+  tanggalVerifikasi: Date;
 
   @IsNotEmpty()
   @IsString()
-  CatatanTolakVerifikasi: string;
+  catatanTolakVerifikasi: string;
 }

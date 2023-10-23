@@ -10,7 +10,7 @@ import { BuktiPendukungService } from './bukti-pendukung.service';
 // import { PengaduanMasyarakat_BuktiPendukungModel } from '@prisma/client';
 import { FileUploadService } from 'src/file-upload/file-upload.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { BufferedFile } from 'src/minio-client/file.model';
+import { BufferedFile } from 'src/model/external/file-model';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { PengaduanMasyarakat_BuktiPendukungModel } from '@prisma/client';
 
@@ -32,14 +32,14 @@ export class BuktiPendukungController {
     const { filename } = uploadFile;
     const { id } = body;
     const data = {
-      PengaduanMasyarakatModelId: id,
-      BuktiFile: filename,
+      pengaduanMasyarakatModelId: id,
+      buktiFile: filename,
     };
-    const { PengaduanMasyarakatModelId, BuktiFile } = data;
+    const { pengaduanMasyarakatModelId, buktiFile } = data;
     return this.buktiPendukungService.createBuktiPendukung({
-      BuktiFile,
-      PengaduanMasyarakatModel: {
-        connect: { Id: PengaduanMasyarakatModelId },
+      buktiFile,
+      pengaduanMasyarakatModel: {
+        connect: { id: pengaduanMasyarakatModelId },
       },
     });
   }
