@@ -1,4 +1,8 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { PengaduanMasyarakatModel, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { CreatePengaduanMasyarakatDto } from '../../dto/create-pengaduan-masyarakat.dto';
@@ -6,6 +10,7 @@ import { PaginatorTypes, paginator } from '@nodeteam/nestjs-prisma-pagination';
 import { DateTime } from 'luxon';
 import { Status } from '@prisma/client';
 import { UpdatePengaduanMasyarakat } from 'src/dto/update-pengaduan-masyarakat.dto';
+// import { UpdatePengaduanMasyarakat } from 'src/dto/update-pengaduan-masyarakat.dto';
 
 export interface QueryFilter extends PengaduanMasyarakatModel {
   ({});
@@ -92,7 +97,6 @@ export class PengaduanMasyarakatService {
         },
       });
       if (IdIsExist) {
-        console.log(IdIsExist);
         throw new UnprocessableEntityException('Id Is Exist');
       } else {
         data.tanggalLahir = new Date(data.tanggalLahir);
@@ -110,9 +114,7 @@ export class PengaduanMasyarakatService {
         // P2022: Unique constraint failed
         // Prisma error codes: https://www.prisma.io/docs/reference/api-reference/error-reference#error-codes
         if (error.code === 'P2002') {
-          throw new UnprocessableEntityException(
-            `The character already exists`,
-          );
+          throw new UnprocessableEntityException(`id sudah dipakai`);
         }
       }
       throw error;
@@ -121,30 +123,43 @@ export class PengaduanMasyarakatService {
 
   async updatePengaduanMasyarakat(
     id: string,
-    data: PengaduanMasyarakatModel,
+    data: UpdatePengaduanMasyarakat,
   ): Promise<PengaduanMasyarakatModel> {
-    return this.prisma.pengaduanMasyarakatModel.update({
-      where: { id: String(id) },
-      data: {
-        id: data.id,
-        jenisPerkara: data.jenisPerkara,
-        detailLaporan: data.detailLaporan,
-      },
-    });
+    try {
+      const IdIsExist = await this.getPengaduanMasyarakatId(id);
+      if (!IdIsExist) {
+        throw new NotFoundException('Id tidak ditemukan');
+      }
+
+      const merged = Object.assign({}, IdIsExist, data);
+      merged.recUpdate = new Date();
+
+      return await this.prisma.pengaduanMasyarakatModel.update({
+        where: { id: String(id) },
+        data: { ...merged },
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
-  async deletePengaduanMasyarakat(id: string): Promise<any> {
-    const IsExist = await this.getPengaduanMasyarakatId(id);
-    if (IsExist === null) return console.log('id Not Found');
-    return this.prisma.pengaduanMasyarakatModel.delete({
-      where: { id: String(id) },
-    });
+  async deletePengaduanMasyarakat(id: string) {
+    try {
+      const IdIsExist = await this.getPengaduanMasyarakatId(id);
+      if (IdIsExist === null) {
+        throw new UnprocessableEntityException('Data tidak ditemukan');
+      }
+
+      return await this.prisma.pengaduanMasyarakatModel.delete({
+        where: { id: String(id) },
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
-  async submitPengaduanMasyarakat(
-    id: string,
-  ): Promise<UpdatePengaduanMasyarakat> {
-    console.log(id);
+  async submitPengaduanMasyarakat(id: string) {
+    // console.log(id);
     return this.prisma.pengaduanMasyarakatModel.update({
       where: { id: String(id) },
       data: {

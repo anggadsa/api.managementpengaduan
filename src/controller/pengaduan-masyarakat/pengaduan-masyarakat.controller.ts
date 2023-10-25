@@ -16,7 +16,7 @@ import { Request, Response } from 'express';
 import { PengaduanMasyarakatModel } from '../../model/pengaduan-masyarakat/pengaduan-masyarakat.model';
 import { CreatePengaduanMasyarakatDto } from '../../dto/create-pengaduan-masyarakat.dto';
 import { UpdatePengaduanMasyarakat } from '../../dto/update-pengaduan-masyarakat.dto';
-import Static from 'src/static/static';
+// import Static from 'src/static/static';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { BuktiPendukungService } from 'src/bukti-pendukung/bukti-pendukung.service';
 
@@ -52,7 +52,7 @@ export class PengaduanMasyarakatController {
     const result =
       await this.pengaduanMasyarakatService.getPengaduanMasyarakat(Id);
     return response.status(200).json({
-      message: 'Successfully fetch data!',
+      message: 'Data Berhasil Didapatkan',
       data: result,
     });
   }
@@ -66,7 +66,7 @@ export class PengaduanMasyarakatController {
     const result =
       await this.pengaduanMasyarakatService.createPengaduanMasyarakat(body);
     return response.status(201).json({
-      message: 'Successfully fetch data!',
+      message: 'Data berhasil ditambahkan',
       result,
     });
   }
@@ -80,20 +80,15 @@ export class PengaduanMasyarakatController {
   ): Promise<PengaduanMasyarakatModel> {
     const result =
       await this.pengaduanMasyarakatService.submitPengaduanMasyarakat(id);
-    // const buktiPengaduan =
-    //   await this.buktiPendukungService.createBuktiPendukung(pengaduan);
-    // const result = await this.pengaduanMasyarakatService.getPengaduanMasyarakat(
-    //   buktiPengaduan.PengaduanMasyarakatModelId,
-    // );
     return response.status(201).json({
-      message: 'Successfully fetch data!',
+      message: 'Berhasil melakukan submit',
       result,
     });
   }
 
-  @Put()
+  @Put(':id')
   async update(
-    @Body('id') id: string,
+    @Param('id') id: string,
     @Body(ValidationPipe) data: UpdatePengaduanMasyarakat,
     @Req() request,
     @Res() response,
@@ -106,29 +101,29 @@ export class PengaduanMasyarakatController {
         );
 
       return response.status(201).json({
-        message: 'Successfully fetch data!',
+        message: 'Data berhasil diubah',
         data: result,
       });
     } catch (error) {
-      return response.status(Static.RES_BAD_REQUEST).json({
-        code: Static.RES_BAD_REQUEST,
-        message: error.meta.cause,
-        data: [],
-      });
+      throw error;
     }
   }
 
-  @Delete()
+  @Delete(':id')
   async deleteBook(
-    @Body('Id') Id: string,
+    @Param('id') id: string,
     @Req() request,
     @Res() response,
-  ): Promise<any | null> {
-    const result =
-      this.pengaduanMasyarakatService.deletePengaduanMasyarakat(Id);
-    return response.status(204).json({
-      message: 'Successfully fetch data!',
-      data: result,
-    });
+  ): Promise<any> {
+    try {
+      const result =
+        await this.pengaduanMasyarakatService.deletePengaduanMasyarakat(id);
+      return response.status(204).json({
+        message: 'Successfully Delete Data',
+        data: result,
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 }
