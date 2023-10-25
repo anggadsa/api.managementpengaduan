@@ -20,21 +20,32 @@ export class PengaduanMasyarakatService {
   constructor(private prisma: PrismaService) {}
 
   async getAllPengaduanMasyarakat({
-    orderBy,
-    page,
-    perPage,
+    sortBy,
+    isSortAscending,
+    pageIndex,
+    pageSize,
     filter,
   }: {
     where?: any;
+    isSortAscending?: string;
+    sortBy?: any;
+    pageIndex?: number;
+    pageSize?: number;
     orderBy?: Prisma.PengaduanMasyarakatModelOrderByWithRelationInput;
     page?: number;
     perPage?: number;
     filter?: DateFilter;
-  }): Promise<PaginatorTypes.PaginatedResult<PengaduanMasyarakatModel>> {
+  }): Promise<any> {
     // try {
     const paginate: PaginatorTypes.PaginateFunction = paginator({
-      perPage: perPage,
+      perPage: pageSize,
     });
+
+    if (isSortAscending) {
+      isSortAscending = 'asc';
+    } else {
+      isSortAscending = 'desc';
+    }
 
     if (filter?.recInsert) {
       const startDate = {
@@ -43,30 +54,31 @@ export class PengaduanMasyarakatService {
           : DateTime.now().startOf('day').toString(),
       };
       filter.recInsert = startDate;
-      console.log(filter.recInsert);
     }
 
-    return await paginate<
+    const pagination = await paginate<
       PengaduanMasyarakatModel,
       Prisma.PengaduanMasyarakatModelFindManyArgs
     >(
       this.prisma.pengaduanMasyarakatModel,
       {
         where: filter,
-        select: {
-          id: true,
-          jenisPerkara: true,
-          namaPelapor: true,
-          namaKuasaHukum: true,
-          recInsert: true,
-        },
-        orderBy,
+        orderBy: { [sortBy]: isSortAscending ? 'asc' : 'desc' },
       },
       {
-        page,
-        perPage,
+        page: pageIndex,
+        perPage: pageSize,
       },
     );
+    const page = {
+      count: pagination.meta.total,
+      pageIndex: pagination.meta.currentPage,
+      pageSize: pagination.meta.lastPage,
+      isFirstPage: pageIndex == 1 ? true : false,
+      isLastPage: pagination.meta.next == null ? true : false,
+    };
+
+    return [pagination.data, page];
   }
 
   async getPengaduanMasyarakat(
@@ -77,22 +89,39 @@ export class PengaduanMasyarakatService {
     });
   }
 
-  async createPengaduanMasyarakat(
-    data: CreatePengaduanMasyarakatDto,
-  ): Promise<PengaduanMasyarakatModel> {
-    const IdIsExist = await this.getPengaduanMasyarakatId(data.id);
-    if (IdIsExist) {
-      throw new UnprocessableEntityException('Id already exists');
-    } else {
-      data.tanggalLahir = new Date(data.tanggalLahir);
-      data.tanggalSuratKuasa = new Date(data.tanggalSuratKuasa);
-      data.recInsert = new Date(data.recInsert);
-      data.recUpdate = new Date(data.recUpdate);
-      data.tanggalVerifikasi = new Date(data.tanggalVerifikasi);
-      data.status = Status.draft;
-      return await this.prisma.pengaduanMasyarakatModel.create({
-        data,
+  async createPengaduanMasyarakat(data: CreatePengaduanMasyarakatDto) {
+    try {
+      const IdIsExist = await this.prisma.pengaduanMasyarakatModel.findFirst({
+        where: {
+          notarisId: data.notarisId,
+          nomerSuratKuasa: data.nomerSuratKuasa,
+        },
       });
+      if (IdIsExist) {
+        console.log(IdIsExist);
+        throw new UnprocessableEntityException('Id Is Exist');
+      } else {
+        data.tanggalLahir = new Date(data.tanggalLahir);
+        data.tanggalSuratKuasa = new Date(data.tanggalSuratKuasa);
+        data.recInsert = new Date(data.recInsert);
+        data.recUpdate = new Date(data.recUpdate);
+        data.tanggalVerifikasi = new Date(data.tanggalVerifikasi);
+        data.status = Status.draft;
+        return await this.prisma.pengaduanMasyarakatModel.create({
+          data,
+        });
+      }
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        // P2022: Unique constraint failed
+        // Prisma error codes: https://www.prisma.io/docs/reference/api-reference/error-reference#error-codes
+        if (error.code === 'P2002') {
+          throw new UnprocessableEntityException(
+            `The character already exists`,
+          );
+        }
+      }
+      throw error;
     }
   }
 

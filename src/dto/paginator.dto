@@ -1,0 +1,5 @@
+import { PaginatorTypes } from '../model/type/paginator.type';
+export declare const paginator: (
+  defaultOptions: PaginatorTypes.PaginateOptions,
+) => PaginatorTypes.PaginateFunction;
+export { PaginatorTypes };

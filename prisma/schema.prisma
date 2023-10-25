@@ -42,6 +42,8 @@ model PengaduanMasyarakatModel {
   tanggalVerifikasi                        DateTime
   catatanTolakVerifikasi                   String
   pengaduanMasyarakat_BuktiPendukungModels PengaduanMasyarakat_BuktiPendukungModel[]
+
+  @@unique([notarisId, nomerSuratKuasa, id])
 }
 
 model PengaduanMasyarakat_BuktiPendukungModel {

@@ -26,7 +26,7 @@ async function bootstrap() {
       transform: true,
       exceptionFactory: (errors) => {
         const result = errors.map((error) => ({
-          property: error.property,
+          [error.property]: error.property,
           message: error.constraints[Object.keys(error.constraints)[0]],
         }));
         throw new BadRequestException(result);

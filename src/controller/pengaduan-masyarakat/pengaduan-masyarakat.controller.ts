@@ -34,11 +34,12 @@ export class PengaduanMasyarakatController {
     @Res() response: Response,
   ): Promise<any> {
     const param = request.query;
+
     const result =
       await this.pengaduanMasyarakatService.getAllPengaduanMasyarakat(param);
     return response.status(200).json({
-      message: 'Successfully fetch data!',
-      result,
+      data: result[0],
+      page: result[1],
     });
   }
 
@@ -64,11 +65,6 @@ export class PengaduanMasyarakatController {
   ): Promise<PengaduanMasyarakatModel> {
     const result =
       await this.pengaduanMasyarakatService.createPengaduanMasyarakat(body);
-    // const buktiPengaduan =
-    //   await this.buktiPendukungService.createBuktiPendukung(pengaduan);
-    // const result = await this.pengaduanMasyarakatService.getPengaduanMasyarakat(
-    //   buktiPengaduan.PengaduanMasyarakatModelId,
-    // );
     return response.status(201).json({
       message: 'Successfully fetch data!',
       result,
