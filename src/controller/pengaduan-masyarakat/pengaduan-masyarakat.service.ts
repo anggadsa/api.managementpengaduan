@@ -10,7 +10,6 @@ import { PaginatorTypes, paginator } from '@nodeteam/nestjs-prisma-pagination';
 import { DateTime } from 'luxon';
 import { Status } from '@prisma/client';
 import { UpdatePengaduanMasyarakat } from 'src/dto/update-pengaduan-masyarakat.dto';
-// import { UpdatePengaduanMasyarakat } from 'src/dto/update-pengaduan-masyarakat.dto';
 
 export interface QueryFilter extends PengaduanMasyarakatModel {
   ({});
@@ -80,12 +79,16 @@ export class PengaduanMasyarakatService {
     return [pagination.data, page];
   }
 
-  async getPengaduanMasyarakat(
-    id: string,
-  ): Promise<PengaduanMasyarakatModel | null> {
-    return this.prisma.pengaduanMasyarakatModel.findUnique({
-      where: { id: String(id) },
-    });
+  async getPengaduanMasyarakat(id: string): Promise<PengaduanMasyarakatModel> {
+    try {
+      const findById =
+        await this.prisma.pengaduanMasyarakatModel.findUniqueOrThrow({
+          where: { id: id },
+        });
+      return findById;
+    } catch (error) {
+      throw new NotFoundException('Id tidak ditemukan');
+    }
   }
 
   async createPengaduanMasyarakat(data: CreatePengaduanMasyarakatDto) {
@@ -97,7 +100,7 @@ export class PengaduanMasyarakatService {
         },
       });
       if (IdIsExist) {
-        throw new UnprocessableEntityException('Id Is Exist');
+        throw new UnprocessableEntityException('Id telah digunakan');
       } else {
         data.tanggalLahir = new Date(data.tanggalLahir);
         data.tanggalSuratKuasa = new Date(data.tanggalSuratKuasa);
