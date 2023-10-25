@@ -27,7 +27,7 @@ export class PengaduanMasyarakatService {
     filter,
   }: {
     where?: any;
-    isSortAscending?: string;
+    isSortAscending?: any;
     sortBy?: any;
     pageIndex?: number;
     pageSize?: number;
@@ -36,16 +36,9 @@ export class PengaduanMasyarakatService {
     perPage?: number;
     filter?: DateFilter;
   }): Promise<any> {
-    // try {
     const paginate: PaginatorTypes.PaginateFunction = paginator({
       perPage: pageSize,
     });
-
-    if (isSortAscending) {
-      isSortAscending = 'asc';
-    } else {
-      isSortAscending = 'desc';
-    }
 
     if (filter?.recInsert) {
       const startDate = {
@@ -63,13 +56,14 @@ export class PengaduanMasyarakatService {
       this.prisma.pengaduanMasyarakatModel,
       {
         where: filter,
-        orderBy: { [sortBy]: isSortAscending ? 'asc' : 'desc' },
+        orderBy: { [sortBy]: isSortAscending === 'true' ? 'asc' : 'desc' },
       },
       {
         page: pageIndex,
         perPage: pageSize,
       },
     );
+
     const page = {
       count: pagination.meta.total,
       pageIndex: pagination.meta.currentPage,
