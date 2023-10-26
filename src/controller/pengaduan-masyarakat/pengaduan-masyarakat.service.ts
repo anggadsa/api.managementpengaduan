@@ -25,13 +25,13 @@ export class PengaduanMasyarakatService {
 
   async getAllPengaduanMasyarakat({
     sortBy,
-    isSortAscending,
+    isSortAscending = true,
     pageIndex,
     pageSize,
     filter,
   }: {
     where?: any;
-    isSortAscending?: any;
+    isSortAscending?: boolean;
     sortBy?: any;
     pageIndex?: number;
     pageSize?: number;
@@ -60,7 +60,11 @@ export class PengaduanMasyarakatService {
       this.prisma.pengaduanMasyarakatModel,
       {
         where: filter,
-        orderBy: { [sortBy]: isSortAscending === 'true' ? 'asc' : 'desc' },
+        orderBy: sortBy
+          ? {
+              [sortBy]: isSortAscending ? 'asc' : 'desc',
+            }
+          : undefined,
       },
       {
         page: pageIndex,
@@ -71,7 +75,7 @@ export class PengaduanMasyarakatService {
     const page = {
       count: pagination.meta.total,
       pageIndex: pagination.meta.currentPage,
-      pageSize: pagination.meta.lastPage,
+      pageSize: pageSize | 0,
       isFirstPage: pageIndex == 1 ? true : false,
       isLastPage: pagination.meta.next == null ? true : false,
     };
@@ -100,7 +104,7 @@ export class PengaduanMasyarakatService {
         },
       });
       if (IdIsExist) {
-        throw new UnprocessableEntityException('Id telah digunakan');
+        throw new UnprocessableEntityException('Id Telah digunakan');
       } else {
         data.tanggalLahir = new Date(data.tanggalLahir);
         data.tanggalSuratKuasa = new Date(data.tanggalSuratKuasa);
@@ -133,7 +137,6 @@ export class PengaduanMasyarakatService {
       if (!IdIsExist) {
         throw new NotFoundException('Id tidak ditemukan');
       }
-
       const merged = Object.assign({}, IdIsExist, data);
       merged.recUpdate = new Date();
 
