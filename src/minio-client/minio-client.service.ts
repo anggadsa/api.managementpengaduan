@@ -2,7 +2,7 @@ import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { MinioService } from 'nestjs-minio-client';
 import { config } from '../config/etc/minio.conf';
 import { BufferedFile } from '../model/external/file-model';
-import * as crypto from 'crypto';
+// import * as crypto from 'crypto';
 
 @Injectable()
 export class MinioClientService {
@@ -19,6 +19,7 @@ export class MinioClientService {
 
   public async upload(
     file: BufferedFile,
+    id: string,
     baseBucket: string = this.baseBucket,
   ) {
     try {
@@ -32,15 +33,16 @@ export class MinioClientService {
       ) {
         throw new HttpException('Error uploading file', HttpStatus.BAD_REQUEST);
       }
-      const temp_filename = Date.now().toString();
-      const hashedFileName = crypto
-        .createHash('md5')
-        .update(temp_filename)
-        .digest('hex');
+      // const temp_filename = Date.now().toString();
+      // const hashedFileName = crypto
+      //   .createHash('md5')
+      //   .update(temp_filename)
+      //   .digest('hex');
       const ext = file.originalname.substring(
         file.originalname.lastIndexOf('.'),
         file.originalname.length,
       );
+      const hashedFileName = id;
       const metaData = {
         'Content-Type': file.mimetype,
         'X-Amz-Meta-Testing': 1234,
@@ -48,7 +50,7 @@ export class MinioClientService {
       const filename = `pdf` + `/` + hashedFileName + ext;
       const fileName: string = `${filename}`;
       // const bucket = `${baseBucket}/image`;
-      console.log(fileName);
+      // console.log(fileName);
       const fileBuffer = file.buffer;
       this.client.putObject(baseBucket, fileName, fileBuffer, metaData);
 

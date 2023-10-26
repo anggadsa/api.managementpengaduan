@@ -6,8 +6,8 @@ import { BufferedFile } from 'src/model/external/file-model';
 export class FileUploadService {
   constructor(private minioClientService: MinioClientService) {}
 
-  async uploadSingle(image: BufferedFile) {
-    const uploaded_image = await this.minioClientService.upload(image);
+  async uploadSingle(image: BufferedFile, id: string) {
+    const uploaded_image = await this.minioClientService.upload(image, id);
 
     return {
       filename: uploaded_image.url,
@@ -15,12 +15,12 @@ export class FileUploadService {
     };
   }
 
-  async uploadMany(files: BufferedFile) {
+  async uploadMany(files: BufferedFile, id) {
     const image1 = files['image1'][0];
-    const uploaded_image1 = await this.minioClientService.upload(image1);
+    const uploaded_image1 = await this.minioClientService.upload(image1, id);
 
     const image2 = files['image2'][0];
-    const uploaded_image2 = await this.minioClientService.upload(image2);
+    const uploaded_image2 = await this.minioClientService.upload(image2, id);
 
     return {
       image1_url: uploaded_image1.url,

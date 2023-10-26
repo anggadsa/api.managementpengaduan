@@ -28,9 +28,9 @@ export class BuktiPendukungController {
     @UploadedFile() file: BufferedFile,
     @Body() body,
   ): Promise<PengaduanMasyarakat_BuktiPendukungModel> {
-    const uploadFile = await this.fileUploadService.uploadSingle(file);
-    const { filename } = uploadFile;
     const { id } = body;
+    const uploadFile = await this.fileUploadService.uploadSingle(file, id);
+    const { filename } = uploadFile;
     const data = {
       pengaduanMasyarakatModelId: id,
       buktiFile: filename,
