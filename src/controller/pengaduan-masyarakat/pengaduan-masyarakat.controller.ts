@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  InternalServerErrorException,
   Param,
   Post,
   Put,
@@ -16,8 +17,10 @@ import { Request, Response } from 'express';
 import { PengaduanMasyarakatModel } from '../../model/pengaduan-masyarakat/pengaduan-masyarakat.model';
 import { CreatePengaduanMasyarakatDto } from '../../dto/create-pengaduan-masyarakat.dto';
 import { UpdatePengaduanMasyarakat } from '../../dto/update-pengaduan-masyarakat.dto';
-// import Static from 'src/static/static';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { RolesGuard } from 'src/auth/role/role.guard';
+import { Roles } from 'src/auth/role/role.decorator';
+import { Role } from 'src/config/enum/role.enum';
 import { BuktiPendukungService } from 'src/bukti-pendukung/bukti-pendukung.service';
 
 @UseGuards(AuthGuard)
@@ -29,28 +32,42 @@ export class PengaduanMasyarakatController {
   ) {}
 
   @Get()
+  @UseGuards(RolesGuard)
+  @Roles(Role.PUBLIC)
   async index(
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<any> {
-    const param = request.query;
+    try {
+      //#region Get Param and User jwt payload from Auth Guard
+      const param = request.query;
+      const userId = request['user'];
+      //#endregion
 
-    const result =
-      await this.pengaduanMasyarakatService.getAllPengaduanMasyarakat(param);
-    return response.status(200).json({
-      data: result[0],
-      page: result[1],
-    });
+      // #region Set Default Filter id to UserId
+      param.filter
+        ? (param.filter['id'] = userId.id)
+        : (param.filter = { id: userId.id });
+      // #endregion
+
+      const result = await this.pengaduanMasyarakatService.index(param);
+      return response.status(200).json({
+        data: result[0],
+        page: result[1],
+      });
+    } catch (error) {
+      throw new InternalServerErrorException('Request tidak dapat diproses');
+    }
   }
 
   @Get(':id')
   async show(
-    @Param('id') Id: string,
+    @Param('id') id: string,
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<any | undefined> {
     const result =
-      await this.pengaduanMasyarakatService.getPengaduanMasyarakat(Id);
+      await this.pengaduanMasyarakatService.getPengaduanMasyarakat(id);
     return response.status(200).json({
       message: 'Data Berhasil Didapatkan',
       data: result,

@@ -23,7 +23,7 @@ export interface DateFilter extends Omit<QueryFilter, 'recInsert'> {
 export class PengaduanMasyarakatService {
   constructor(private prisma: PrismaService) {}
 
-  async getAllPengaduanMasyarakat({
+  async index({
     sortBy,
     isSortAscending = true,
     pageIndex,

@@ -7,14 +7,25 @@ export type User = any;
 export class UsersService {
   private readonly users = [
     {
-      userId: 1,
-      username: 'admin@email.com',
-      password: 'secret123',
+      id: 'e32ca048-c7eb-40e1-851b-3b25f9f4169e',
+      nama: 'joko',
+      username: 'jokoSuper',
+      password: 'jokoSuper',
+      role: ['notaris', 'mpd', 'mpw', 'mpp'],
     },
     {
-      userId: 2,
-      username: 'user@email.com',
-      password: 'secret',
+      id: 'e32ca048-c7eb-40e1-851b-3b25f9f4169e',
+      nama: 'joko',
+      username: 'jokoNotaris',
+      password: 'jokoNotaris',
+      role: ['notaris'],
+    },
+    {
+      id: 'e32ca048-c7eb-40e1-851b-3b25f9f4169e',
+      nama: 'joko',
+      username: 'jokoPublik',
+      password: 'jokoPublik',
+      role: ['userPublik'],
     },
   ];
 
